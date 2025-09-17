@@ -8,7 +8,7 @@ export function Modal() {
 
   return (
     <div id="modal_overlay" className="fixed inset-0 z-10 bg-black/35 backdrop-blur-[2px] animate-overlay-show">
-      <div className="bg-gray-50 fixed top-1/2 left-1/2 z-20 w-[600px] -translate-x-1/2 -translate-y-1/2 py-6 px-6 rounded-lg shadow animate-content-show">
+      <div className="bg-gray-50 fixed top-1/2 left-1/2 z-20 w-[600px] -translate-x-1/2 -translate-y-1/2 py-4 px-6 rounded-lg shadow animate-content-show">
         <div className="flex justify-between items-center mb-5">
           <h1 className="text-2xl font-medium">{modal.title}</h1>
 

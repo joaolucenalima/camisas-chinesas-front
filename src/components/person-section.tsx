@@ -26,7 +26,7 @@ export function PersonSection({ personName, shirts }: PersonSectionProps) {
 
 			{isHover && (
 				<button
-					className="absolute -top-2.5 right-4 w-6 h-6 bg-white border border-zinc-400 rounded flex items-center justify-center cursor-pointer hover:bg-zinc-100"
+					className="absolute -top-2.5 right-4 w-6 h-6 bg-white border border-zinc-400 text-zinc-600 rounded flex items-center justify-center cursor-pointer hover:bg-zinc-100"
 					title="Adicionar camisa"
 					onClick={() => openModal({
 						title: "Adicionar camisa",
