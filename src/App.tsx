@@ -1,44 +1,50 @@
+import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
+import { AddPersonForm } from "./components/add-person-form";
+import { Button } from "./components/button";
 import { PersonSection } from "./components/person-section";
+import { useModal } from "./contexts/useModal";
 
 type ShirtType = {
-	camisetas: {
-		primeira_leva: string[];
-		segunda_leva: {
-			[key: string]: string[];
-		};
-	};
+  files: string[];
 };
 
 function App() {
-	const [shirts, setShirts] = useState<ShirtType>();
+  const { openModal } = useModal();
 
-	useEffect(() => {
-		fetch("http://localhost:3333/files")
-			.then((response) => response.json())
-			.then((data) => setShirts(data));
-	}, []);
+  const [shirts, setShirts] = useState<ShirtType>();
 
-	return (
-		<>
-			<h1 className="text-3xl font-semibold">Camisas chinesas</h1>
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/files`)
+      .then((response) => response.json())
+      .then((data) => setShirts(data));
+  }, []);
 
-			<p>Aplicação para colocar seus pedidos de camisas de time da china</p>
+  return (
+    <>
+      <h1 className="text-3xl font-semibold">Camisas chinesas</h1>
 
-			<main className="w-full flex flex-col gap-4 mt-2">
-				{shirts &&
-					Object.entries(shirts?.camisetas.segunda_leva).map(
-						([person, shirts]) => (
-							<PersonSection
-								key={person}
-								personName={person}
-								shirts={shirts}
-							/>
-						)
-					)}
-			</main>
-		</>
-	);
+      <p>Aplicação para fazer pedidos de camisas de time da china</p>
+
+      <Button
+        onClick={() =>
+          openModal({
+            title: "Adicionar pessoa",
+            modalElement: <AddPersonForm />,
+          })
+        }
+      >
+        Adicionar pessoa <Plus />
+      </Button>
+
+      <main className="w-full flex flex-col gap-4 mt-2">
+        {shirts &&
+          Object.entries(shirts?.files).map(([person, shirts]) => (
+            <PersonSection key={person} personName={person} shirts={shirts} />
+          ))}
+      </main>
+    </>
+  );
 }
 
 export default App;
