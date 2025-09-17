@@ -1,15 +1,16 @@
-import { useState } from "react";
-import { Shirt } from "./shirt";
 import { Plus } from "lucide-react";
+import { useState } from "react";
 import { useModal } from "../contexts/useModal";
 import { AddShirtForm } from "./add-shirt-form";
 
 interface PersonSectionProps {
-	personName: string;
-	shirts: string[];
+	person: {
+		name: string;
+		id: string
+	}
 }
 
-export function PersonSection({ personName, shirts }: PersonSectionProps) {
+export function PersonSection({ person }: PersonSectionProps) {
 	const { openModal } = useModal()
 
 	const [isHover, setIsHover] = useState<boolean>(false);
@@ -21,7 +22,7 @@ export function PersonSection({ personName, shirts }: PersonSectionProps) {
 			onMouseLeave={() => setIsHover(false)}
 		>
 			<h2 className="text-lg font-semibold absolute -top-4 left-8 bg-white px-2">
-				{personName}
+				{person.name}
 			</h2>
 
 			{isHover && (
@@ -30,20 +31,20 @@ export function PersonSection({ personName, shirts }: PersonSectionProps) {
 					title="Adicionar camisa"
 					onClick={() => openModal({
 						title: "Adicionar camisa",
-						modalElement: <AddShirtForm personName={personName} />
+						modalElement: <AddShirtForm personName={person.name} />
 					})}
 				>
 					<Plus size={18} />
 				</button>
 			)}
 
-			<div className="flex flex-wrap gap-4">
+			{/* <div className="flex flex-wrap gap-4">
 				{shirts.length ? (
 					shirts.map((shirt) => <Shirt key={shirt} image={shirt} />)
 				) : (
 					<p className="flex-1 text-center p-2">Nenhuma camisa escolhida</p>
 				)}
-			</div>
+			</div> */}
 		</section>
 	);
 }

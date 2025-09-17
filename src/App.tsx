@@ -5,20 +5,23 @@ import { Button } from "./components/button";
 import { PersonSection } from "./components/person-section";
 import { useModal } from "./contexts/useModal";
 
-type ShirtType = {
-  files: string[];
+type PersonType = {
+  id: string;
+  name: string;
 };
 
 function App() {
-  const { openModal } = useModal();
+  const { openModal, modal } = useModal();
 
-  const [shirts, setShirts] = useState<ShirtType>();
+  const [persons, setPersons] = useState<PersonType[]>([]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/files`)
+    if (modal) return;
+
+    fetch(`${import.meta.env.VITE_API_URL}/person`)
       .then((response) => response.json())
-      .then((data) => setShirts(data));
-  }, []);
+      .then((data) => setPersons(data));
+  }, [modal]);
 
   return (
     <>
@@ -38,10 +41,9 @@ function App() {
       </Button>
 
       <main className="w-full flex flex-col gap-4 mt-2">
-        {shirts &&
-          Object.entries(shirts?.files).map(([person, shirts]) => (
-            <PersonSection key={person} personName={person} shirts={shirts} />
-          ))}
+        {persons && persons.map(person => (
+          <PersonSection key={person.name} person={person} />
+        ))}
       </main>
     </>
   );

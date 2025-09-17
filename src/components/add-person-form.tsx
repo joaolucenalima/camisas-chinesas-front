@@ -10,10 +10,14 @@ export function AddPersonForm() {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
 
-    fetch(`${import.meta.env.VITE_API_URL}/files`, {
+    fetch(`${import.meta.env.VITE_API_URL}/person`, {
       method: "POST",
-      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
     })
       .then((response) => response.json())
       .then(() => closeModal());
