@@ -3,7 +3,7 @@ import { useModal } from "../contexts/useModal";
 import { Button } from "./button";
 import { Input } from "./input";
 
-export function AddPersonForm() {
+export function AddPersonForm({ personMutate }: { personMutate: () => void }) {
   const { closeModal } = useModal();
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -20,7 +20,10 @@ export function AddPersonForm() {
       body: JSON.stringify(data),
     })
       .then((response) => response.json())
-      .then(() => closeModal());
+      .then(() => {
+        closeModal();
+        personMutate();
+      });
   }
 
   return (

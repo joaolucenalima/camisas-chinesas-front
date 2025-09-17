@@ -1,9 +1,9 @@
 import { Plus } from "lucide-react";
-import { useEffect, useState } from "react";
 import { AddPersonForm } from "./components/add-person-form";
 import { Button } from "./components/button";
 import { PersonSection } from "./components/person-section";
 import { useModal } from "./contexts/useModal";
+import { useFetch } from "./hooks/use-fetch";
 
 type PersonType = {
   id: string;
@@ -11,17 +11,9 @@ type PersonType = {
 };
 
 function App() {
-  const { openModal, modal } = useModal();
+  const { openModal } = useModal();
 
-  const [persons, setPersons] = useState<PersonType[]>([]);
-
-  useEffect(() => {
-    if (modal) return;
-
-    fetch(`${import.meta.env.VITE_API_URL}/person`)
-      .then((response) => response.json())
-      .then((data) => setPersons(data));
-  }, [modal]);
+  const { data: persons, refetch } = useFetch<PersonType[]>("/person")
 
   return (
     <>
@@ -33,7 +25,7 @@ function App() {
         onClick={() =>
           openModal({
             title: "Adicionar pessoa",
-            modalElement: <AddPersonForm />,
+            modalElement: <AddPersonForm personMutate={refetch} />,
           })
         }
       >
