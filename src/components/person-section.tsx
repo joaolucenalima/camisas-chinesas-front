@@ -1,6 +1,7 @@
-import { Plus } from "lucide-react";
+import { Plus, Shirt } from "lucide-react";
 import { useState } from "react";
 import { useModal } from "../contexts/useModal";
+import { useFetch } from "../hooks/use-fetch";
 import { AddShirtForm } from "./add-shirt-form";
 
 interface PersonSectionProps {
@@ -14,6 +15,8 @@ export function PersonSection({ person }: PersonSectionProps) {
 	const { openModal } = useModal()
 
 	const [isHover, setIsHover] = useState<boolean>(false);
+
+	const { data: shirts, refetch } = useFetch<PersonType[]>("/shirt")
 
 	return (
 		<section
@@ -31,20 +34,20 @@ export function PersonSection({ person }: PersonSectionProps) {
 					title="Adicionar camisa"
 					onClick={() => openModal({
 						title: "Adicionar camisa",
-						modalElement: <AddShirtForm personName={person.name} />
+						modalElement: <AddShirtForm personId={person.id} refetch={refetch} />
 					})}
 				>
 					<Plus size={18} />
 				</button>
 			)}
 
-			{/* <div className="flex flex-wrap gap-4">
+			<div className="flex flex-wrap gap-4">
 				{shirts.length ? (
 					shirts.map((shirt) => <Shirt key={shirt} image={shirt} />)
 				) : (
 					<p className="flex-1 text-center p-2">Nenhuma camisa escolhida</p>
 				)}
-			</div> */}
+			</div>
 		</section>
 	);
 }
