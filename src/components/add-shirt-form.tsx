@@ -8,7 +8,7 @@ const SHIRTS_SIZES = ["XS", "S", "M", "L", "XL", "2XL", "3XL"];
 
 export function AddShirtForm({ personId, refetch }: { personId: string; refetch: () => void }) {
   const { dollarRate } = useAppContext();
-	const { closeModal } = useModal();
+  const { closeModal } = useModal();
 
   const [priceInBRL, setPriceInBRL] = useState<number>();
 
@@ -32,28 +32,34 @@ export function AddShirtForm({ personId, refetch }: { personId: string; refetch:
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
+
+    const priceString = formData.get("price") as string;
+    const priceInCents = Math.round(Number(priceString.replace(/[$,]/g, "")) * 100);
+
+    const submitData = new FormData();
+
+    submitData.append("title", formData.get("title") as string);
+    submitData.append("size", formData.get("size") as string);
+    submitData.append("link", formData.get("link") as string);
+    submitData.append("priceInCents", priceInCents.toString());
+    submitData.append("personId", personId);
+
+    const imageFile = formData.get("image") as File;
+    if (imageFile && imageFile.size > 0) {
+      submitData.append("image", imageFile);
+    }
 
     fetch(`${import.meta.env.VITE_API_URL}/shirt`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-				...data,
-				priceInCents: data.price * 100,
-				personId
-			}),
-    })
-      .then((response) => response.json())
-      .then(() => {
-        closeModal();
-        refetch();
-      });
+      body: submitData,
+    }).then(() => {
+      closeModal();
+      refetch();
+    });
   }
 
   return (
-    <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+    <form className="flex flex-col gap-5" onSubmit={handleSubmit} encType="multipart/form-data">
       <Input label="Nome" name="title" />
 
       <div className="flex items-center gap-4">
@@ -86,7 +92,7 @@ export function AddShirtForm({ personId, refetch }: { personId: string; refetch:
               htmlFor={size}
               className="cursor-pointer border border-zinc-400 w-9 h-9 flex items-center justify-center rounded hover:border-blue-400 has-[input:checked]:bg-blue-500 has-[input:checked]:text-white has-[input:checked]:border-blue-600"
             >
-              <input className="sr-only" type="radio" name="shirtSize" id={size} value={size} />
+              <input className="sr-only" type="radio" name="size" id={size} value={size} />
               <p className="text-sm select-none">{size}</p>
             </label>
           ))}

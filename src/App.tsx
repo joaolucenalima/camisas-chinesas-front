@@ -13,7 +13,7 @@ type PersonType = {
 
 function App() {
   const { openModal } = useModal();
-  const { dollarRate } = useAppContext()
+  const { dollarRate } = useAppContext();
 
   const { data: persons, refetch } = useFetch<PersonType[]>("/person");
 
@@ -23,11 +23,16 @@ function App() {
 
       <p>Aplicação para fazer pedidos de camisas de time da china</p>
 
-      <div className="flex items-center justify-between">
-        <span>Cotação do dólar: {dollarRate?.toLocaleString("pt-BR", {
-          currency: "BRL",
-          style: "currency"
-        })}</span>
+      <div className="flex items-center justify-between w-full">
+        <p>
+          Cotação do dólar:{" "}
+          <span className="font-semibold">
+            {dollarRate?.toLocaleString("pt-BR", {
+              currency: "BRL",
+              style: "currency",
+            })}
+          </span>
+        </p>
 
         <Button
           onClick={() =>
@@ -42,7 +47,7 @@ function App() {
       </div>
 
       <main className="w-full flex flex-col gap-4 mt-2">
-        {persons && persons.map((person) => <PersonSection key={person.name} person={person} />)}
+        {persons && persons.map((person) => <PersonSection key={person.id} person={person} />)}
       </main>
     </>
   );
