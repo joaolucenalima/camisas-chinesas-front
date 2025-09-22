@@ -4,7 +4,7 @@ import { useModal } from "../contexts/useModal";
 import type { PersonDTO } from "../dtos/personDTO";
 import type { ShirtDTO } from "../dtos/shirtDTO";
 import { useFetch } from "../hooks/use-fetch";
-import { AddShirtForm } from "./add-shirt-form";
+import { ShirtForm } from "./shirt-form";
 import { Shirt } from "./shirt";
 
 export function PersonSection({ person }: { person: PersonDTO }) {
@@ -12,7 +12,7 @@ export function PersonSection({ person }: { person: PersonDTO }) {
 
   const [isHover, setIsHover] = useState<boolean>(false);
 
-  const { data: shirts, refetch } = useFetch<ShirtDTO[]>(`/shirt/${person.id}`);
+  const { data: shirts, refetch } = useFetch<ShirtDTO[]>(`/shirt/by-person/${person.id}`);
 
   return (
     <section
@@ -29,7 +29,7 @@ export function PersonSection({ person }: { person: PersonDTO }) {
           onClick={() =>
             openModal({
               title: "Adicionar camisa",
-              modalElement: <AddShirtForm personId={person.id} refetch={refetch} />,
+              modalElement: <ShirtForm personId={person.id} refetch={refetch} />,
             })
           }
         >

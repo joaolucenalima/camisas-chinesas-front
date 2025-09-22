@@ -5,4 +5,5 @@ export interface ShirtDTO {
   imageURL: string;
   priceInCents: number;
   personId: string;
+  size: string;
 }

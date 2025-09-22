@@ -2,7 +2,7 @@ import { Check, Pencil, X } from "lucide-react";
 import { useState } from "react";
 import { useModal } from "../contexts/useModal";
 import type { ShirtDTO } from "../dtos/shirtDTO";
-import { AddShirtForm } from "./add-shirt-form";
+import { ShirtForm } from "./shirt-form";
 
 export function Shirt({ shirt, refetch }: { shirt: ShirtDTO, refetch: () => void }) {
 	const { openModal } = useModal();
@@ -17,7 +17,7 @@ export function Shirt({ shirt, refetch }: { shirt: ShirtDTO, refetch: () => void
 		>
 			<div className="w-52 h-48 bg-gray-100 rounded-t overflow-hidden">
 				<img
-					src={`http://localhost:3333/download/${shirt.imageURL}`}
+					src={`http://localhost:3333/getImage/${shirt.imageURL}`}
 					alt={shirt.title}
 					className="w-full h-full object-cover"
 				/>
@@ -35,7 +35,7 @@ export function Shirt({ shirt, refetch }: { shirt: ShirtDTO, refetch: () => void
 						className="flex items-center justify-center w-6 h-6 text-sm bg-white rounded-full border border-zinc-700 hover:bg-zinc-50 cursor-pointer"
 						title="Editar camisa"
 						onClick={() => openModal({
-							modalElement: <AddShirtForm personId={shirt.personId} refetch={refetch} />,
+							modalElement: <ShirtForm id={shirt.id} personId={shirt.personId} refetch={refetch} />,
 							title: "Editar camisa"
 						})}
 					>
