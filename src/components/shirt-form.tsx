@@ -25,15 +25,6 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
 	const [price, setPrice] = useState<number>(shirt?.priceInCents || 0);
 	const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-	useEffect(() => {
-		if (shirt?.imageURL && !selectedImage) {
-			const imageUrl = `${import.meta.env.VITE_API_URL}/getImage/${
-				shirt.imageURL
-			}`;
-			setSelectedImage(imageUrl);
-		}
-	}, [shirt?.imageURL, selectedImage]);
-
 	function handleChangePrice(e: React.ChangeEvent<HTMLInputElement>) {
 		const cleanedValue = e.currentTarget.value.replace(/\D/g, "");
 		const integerValue = parseInt(cleanedValue || "0", 10) / 100;
@@ -90,6 +81,19 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
 		});
 	}
 
+	useEffect(() => {
+		setPrice((shirt?.priceInCents || 0) / 100);
+	}, [shirt]);
+
+	useEffect(() => {
+		if (shirt?.imageURL && !selectedImage) {
+			const imageUrl = `${import.meta.env.VITE_API_URL}/getImage/${
+				shirt.imageURL
+			}`;
+			setSelectedImage(imageUrl);
+		}
+	}, [shirt?.imageURL, selectedImage]);
+
 	if (id && !shirt) return null;
 
 	return (
@@ -108,7 +112,6 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
 						currency: "USD",
 					})}
 					onChange={handleChangePrice}
-					defaultValue={"$0.00"}
 					className="flex-1"
 					name="price"
 					id="price"
