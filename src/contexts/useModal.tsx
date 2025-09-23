@@ -1,12 +1,33 @@
 import { useContext } from "react";
 import { ModalContext } from "./modal-provider";
+import { ConfirmDialog, type ConfirmDialogProps } from "../components/confirm-dialog";
 
 export const useModal = () => {
-  const context = useContext(ModalContext);
+	const context = useContext(ModalContext);
 
-  if (!context) {
-    throw new Error('useModal must be used within a ModalProvider');
-  }
+	if (!context) {
+		throw new Error("useModal must be used within a ModalProvider");
+	}
 
-  return context;
+	const { openModal, closeModal, modal } = context;
+
+	const confirm = ({
+		title,
+		message,
+		onConfirm,
+		onCancel,
+	}: ConfirmDialogProps & { title: string }) => {
+		openModal({
+			title,
+			modalElement: (
+				<ConfirmDialog
+					message={message}
+					onConfirm={onConfirm}
+					onCancel={onCancel}
+				/>
+			),
+		});
+	};
+
+	return { modal, openModal, closeModal, confirm };
 };

@@ -1,4 +1,4 @@
-import { Check, Pencil, X } from "lucide-react";
+import { Check, Pencil, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { useModal } from "../contexts/useModal";
 import type { ShirtDTO } from "../dtos/shirtDTO";
@@ -11,7 +11,7 @@ export function Shirt({
 	shirt: ShirtDTO;
 	refetch: () => void;
 }) {
-	const { openModal } = useModal();
+	const { openModal, confirm } = useModal();
 
 	const [showActionButtons, setShowActionButtons] = useState(false);
 
@@ -57,45 +57,74 @@ export function Shirt({
 			</div>
 
 			{showActionButtons && (
-				<div className="absolute -top-2 right-0 flex items-center gap-1">
+				<div className="absolute -top-2 right-0 left-0 flex items-center justify-between">
 					<button
 						type="button"
-						aria-label="Edit shirt"
-						className="flex items-center justify-center w-6 h-6 text-sm bg-white rounded-full border border-zinc-700 hover:bg-zinc-50 cursor-pointer"
-						title="Editar camisa"
+						aria-label="Delete shirt"
+						className="flex items-center justify-center w-6 h-6 py-1 text-sm bg-red-700 text-white rounded-full hover:bg-red-800 cursor-pointer"
+						title="Apagar camisa"
 						onClick={() =>
-							openModal({
-								modalElement: (
-									<ShirtForm
-										id={shirt.id}
-										personId={shirt.personId}
-										refetch={refetch}
-									/>
+							confirm({
+								message: (
+									<p>
+										Tem certeza que deseja apagar a camisa{" "}
+										<strong>{shirt.title}</strong>?
+									</p>
 								),
-								title: "Editar camisa",
+								onConfirm: () => {
+									fetch(`${import.meta.env.VITE_API_URL}/shirt/${shirt.id}`, {
+										method: "DELETE",
+									}).then(() => {
+										refetch();
+									});
+								},
+								title: "Apagar camisa",
 							})
 						}
 					>
-						<Pencil size={16} />
+						<Trash2 size={14} />
 					</button>
 
-					<button
-						type="button"
-						aria-label="Mark to buy"
-						className="flex items-center justify-center w-6 h-6 py-1 text-sm bg-green-600 text-white rounded-full hover:bg-green-700 cursor-pointer"
-						title="Marcar para compra"
-					>
-						<Check size={16} />
-					</button>
+					<div className="flex gap-1">
+						<button
+							type="button"
+							aria-label="Edit shirt"
+							className="flex items-center justify-center w-6 h-6 text-sm bg-white rounded-full border border-zinc-700 hover:bg-zinc-50 cursor-pointer"
+							title="Editar camisa"
+							onClick={() =>
+								openModal({
+									modalElement: (
+										<ShirtForm
+											id={shirt.id}
+											personId={shirt.personId}
+											refetch={refetch}
+										/>
+									),
+									title: "Editar camisa",
+								})
+							}
+						>
+							<Pencil size={16} />
+						</button>
 
-					<button
-						type="button"
-						aria-label="Mark no interest"
-						className="flex items-center justify-center w-6 h-6 py-1 text-sm bg-red-600 text-white rounded-full hover:bg-red-700 cursor-pointer"
-						title="Marcar não interesse"
-					>
-						<X size={16} />
-					</button>
+						<button
+							type="button"
+							aria-label="Mark to buy"
+							className="flex items-center justify-center w-6 h-6 py-1 text-sm bg-green-600 text-white rounded-full hover:bg-green-700 cursor-pointer"
+							title="Marcar para compra"
+						>
+							<Check size={16} />
+						</button>
+
+						<button
+							type="button"
+							aria-label="Mark no interest"
+							className="flex items-center justify-center w-6 h-6 py-1 text-sm bg-red-600 text-white rounded-full hover:bg-red-700 cursor-pointer"
+							title="Marcar não interesse"
+						>
+							<X size={16} />
+						</button>
+					</div>
 				</div>
 			)}
 		</div>
