@@ -6,4 +6,5 @@ export interface ShirtDTO {
   priceInCents: number;
   personId: string;
   size: string;
+  status: 1 | 2 | 3 | 4;
 }
