@@ -49,12 +49,12 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
 		}
 	}
 
-	function handleSubmit(e: FormEvent<HTMLFormElement>) {
+	async function handleSubmit(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 
 		const formData = new FormData(e.currentTarget);
 
-		const priceString = formData.get("price") as string;
+		const priceString = (formData.get("price") as string) || "0";
 		const priceInCents = Math.round(
 			Number(priceString.replace(/[$,]/g, "")) * 100
 		);
@@ -72,8 +72,13 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
 			submitData.append("image", imageFile);
 		}
 
-		fetch(`${import.meta.env.VITE_API_URL}/shirt`, {
-			method: "POST",
+		const method = id ? "PUT" : "POST";
+		const url = id
+			? `${import.meta.env.VITE_API_URL}/shirt/${id}`
+			: `${import.meta.env.VITE_API_URL}/shirt`;
+
+		fetch(url, {
+			method: method,
 			body: submitData,
 		}).then(() => {
 			closeModal();
