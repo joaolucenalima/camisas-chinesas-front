@@ -1,69 +1,73 @@
-# React + TypeScript + Vite
+# Camisas chinesas
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação web para gerenciar pedidos de camisas de time com uma loja da China, feita com React, TypeScript, Vite e TailwindCSS.
 
-Currently, two official plugins are available:
+## Funcionalidades
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Cadastro de pessoas interessadas em camisas
+- Adição, edição e remoção de camisas para cada pessoa
+- Controle de status das camisas (decidindo, aguardando resposta, para compra, sem interesse)
+- Conversão automática de valores em dólar para real, com cotação atualizada via API
+- Upload e visualização de imagens das camisas
+- Interface moderna e responsiva
 
-## Expanding the ESLint configuration
+## Tecnologias Utilizadas
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- [React](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [Lucide React Icons](https://lucide.dev/)
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Instalação
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+1. **Clone o repositório:**
+   ```sh
+   git clone https://github.com/joaolucenalima/camisas-chinesas-front.git
+   cd camisas-chinesas-front
+   ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+2. **Instale as dependências:**
+   ```sh
+   npm install
+   ```
+
+3. **Configure as variáveis de ambiente:**
+   - Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+     ```
+     VITE_API_URL=http://localhost:3333
+     VITE_EXCHANGE_RATE_KEY=sua_chave_da_api
+     ```
+
+4. **Inicie o servidor de desenvolvimento:**
+   ```sh
+   npm run dev
+   ```
+
+5. **Abra no navegador:**
+   - Acesse [http://localhost:5173](http://localhost:5173)
+
+## Scripts
+
+- `npm run dev` — Inicia o servidor de desenvolvimento
+- `npm run build` — Gera a build de produção
+- `npm run preview` — Visualiza a build de produção localmente
+- `npm run lint` — Executa o linter
+
+## Estrutura de Pastas
+
+```
+src/
+  components/      # Componentes reutilizáveis (formulários, botões, modais, etc)
+  contexts/        # Contextos React para estado global (modal, app)
+  dtos/            # Tipos de dados (DTOs)
+  hooks/           # Hooks customizados
+  style.css        # Estilos globais (Tailwind)
+  App.tsx          # Componente principal
+  main.tsx         # Ponto de entrada da aplicação
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Observações
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- É necessário rodar uma API backend compatível para persistência dos dados.
+- Para obter a cotação do dólar, é preciso uma chave da [ExchangeRate API](https://www.exchangerate-api.com/).
