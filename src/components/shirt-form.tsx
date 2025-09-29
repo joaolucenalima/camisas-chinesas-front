@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import {
+	useEffect,
+	useRef,
+	useState,
+	type ClipboardEvent,
+	type FormEvent,
+} from "react";
 import { useAppContext } from "../contexts/app-context";
 import { useModal } from "../contexts/useModal";
 import { Button } from "./button";
@@ -41,6 +47,23 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
 			reader.readAsDataURL(file);
 		}
 	}
+
+	const handlePaste = (e: ClipboardEvent<HTMLDivElement>) => {
+		const items = e.clipboardData?.items;
+		if (!items) return;
+
+		for (let i = 0; i < items.length; i++) {
+			const item = items[i];
+			if (item.type.includes("image")) {
+				const file = item.getAsFile();
+				if (file) {
+					const url = URL.createObjectURL(file);
+					setSelectedImage(url);
+				}
+				break;
+			}
+		}
+	};
 
 	function handleRemoveImage() {
 		setSelectedImage(null);
@@ -159,7 +182,10 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
 
 			<Input label="Link" name="link" defaultValue={shirt?.link} />
 
-			<div className="block">
+			<div
+				className="block"
+				onPaste={handlePaste}
+			>
 				<span className="block mb-1 text-sm font-medium text-gray-700">
 					Imagem
 				</span>
@@ -177,7 +203,7 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
 								onClick={handleRemoveImage}
 								className="cursor-pointer absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
 							>
-								×
+								x
 							</button>
 						</div>
 					)}
