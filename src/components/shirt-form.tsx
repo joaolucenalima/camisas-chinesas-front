@@ -226,7 +226,7 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
 				</div>
 			</div>
 
-			<Button type="submit">Salvar</Button>
+			<Button type="submit" className="self-end">Salvar</Button>
 		</form>
 	);
 }

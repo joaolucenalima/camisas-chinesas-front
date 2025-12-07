@@ -1,14 +1,21 @@
-import { Plus } from "lucide-react";
+import { PencilLine, Plus } from "lucide-react";
 import { useMemo } from "react";
 import type { PersonDTO } from "../dtos/personDTO";
 import type { ShirtDTO } from "../dtos/shirtDTO";
 import { useAppContext } from "../hooks/use-app-context";
 import { useFetch } from "../hooks/use-fetch";
 import { useModal } from "../hooks/use-modal";
+import { PersonForm } from "./person-form";
 import { Shirt } from "./shirt";
 import { ShirtForm } from "./shirt-form";
 
-export function PersonSection({ person }: { person: PersonDTO }) {
+export function PersonSection({
+  person,
+  getPersons,
+}: {
+  person: PersonDTO;
+  getPersons: () => void;
+}) {
   const { openModal } = useModal();
   const { dollarRate } = useAppContext();
 
@@ -39,8 +46,21 @@ export function PersonSection({ person }: { person: PersonDTO }) {
 
   return (
     <section className="w-full">
-      <div className="flex items-baseline gap-5 mb-4">
+      <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2 mb-4">
         <h2 className="text-3xl font-semibold">{person.name}</h2>
+
+        <button
+          onClick={() =>
+            openModal({
+              title: "Editar pessoa",
+              modalElement: <PersonForm personId={person.id} refetch={getPersons} />,
+            })
+          }
+          className="cursor-pointer transition-colors text-zinc-400 hover:text-zinc-300"
+          title="Editar pessoa"
+        >
+          <PencilLine size={18} />
+        </button>
 
         {shirtsAmount ? (
           <p className="text-zinc-300 text-lg leading-none">
