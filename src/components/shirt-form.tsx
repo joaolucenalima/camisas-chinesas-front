@@ -1,4 +1,6 @@
+import { X } from "lucide-react";
 import { useEffect, useRef, useState, type ClipboardEvent, type FormEvent } from "react";
+import type { PersonDTO } from "../dtos/personDTO";
 import type { ShirtDTO } from "../dtos/shirtDTO";
 import { useAppContext } from "../hooks/use-app-context";
 import { useFetch } from "../hooks/use-fetch";
@@ -19,6 +21,7 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
   const { closeModal } = useModal();
 
   const { data: shirt } = useFetch<ShirtDTO>(`/shirt/${id}`, !!id);
+  const { data: person } = useFetch<PersonDTO>(`/person/${personId}`);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -53,6 +56,11 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
         if (file) {
           const url = URL.createObjectURL(file);
           setSelectedImage(url);
+          if (fileInputRef.current) {
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInputRef.current.files = dataTransfer.files;
+          }
         }
         break;
       }
@@ -116,9 +124,11 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
 
   return (
     <form className="flex flex-col gap-5" onSubmit={handleSubmit} encType="multipart/form-data">
+      <Input label="Pessoa" defaultValue={person?.name} readOnly disabled />
+
       <Input label="Nome *" name="title" defaultValue={shirt?.title} />
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-end gap-4">
         <Input
           label="Preço (dólares) *"
           value={price.toLocaleString("en-US", {
@@ -172,12 +182,12 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
 
       <Input label="Link" name="link" defaultValue={shirt?.link} />
 
-      <div className="block" onPaste={handlePaste}>
+      <div onPaste={handlePaste}>
         <span className="block mb-1 text-sm font-medium">Imagem</span>
 
         <div className="flex items-center gap-4">
           {selectedImage && (
-            <div className="mb-3 relative inline-block">
+            <div className="relative inline-block">
               <img
                 src={selectedImage}
                 alt="Preview"
@@ -188,7 +198,7 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
                 onClick={handleRemoveImage}
                 className="cursor-pointer absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-700"
               >
-                x
+                <X size={14} />
               </button>
             </div>
           )}

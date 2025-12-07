@@ -13,6 +13,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({
 	const [dollarRate, setDollarRate] = useState<number | null>(null);
 
 	const fetchRate = useCallback(async () => {
+		setDollarRate(5.31)
+		return 
+		
 		const url = `https://v6.exchangerate-api.com/v6/${import.meta.env.VITE_EXCHANGE_RATE_KEY}/latest/USD`;
 
 		const res = await fetch(url);

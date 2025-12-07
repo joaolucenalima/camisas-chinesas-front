@@ -1,7 +1,9 @@
-import { Check, Ellipsis, Pencil, SendToBack, Trash2, X } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { Popover } from "react-tiny-popover";
 import type { ShirtDTO } from "../dtos/shirtDTO";
 import { useModal } from "../hooks/use-modal";
+import { Button } from "./button";
 import { ShirtForm } from "./shirt-form";
 
 const SHIRT_STATUS = {
@@ -23,7 +25,7 @@ const SHIRT_STATUS = {
 export function Shirt({ shirt, refetch }: { shirt: ShirtDTO; refetch: () => void }) {
   const { openModal, confirm } = useModal();
 
-  const [showActionButtons, setShowActionButtons] = useState(false);
+  const [statusPopoverIsOpen, setStatusPopoverIsOpen] = useState(false);
 
   function handleChangeShirtStatus(status: number, shirtId: number) {
     fetch(`${import.meta.env.VITE_API_URL}/shirt/${shirtId}`, {
@@ -38,13 +40,9 @@ export function Shirt({ shirt, refetch }: { shirt: ShirtDTO; refetch: () => void
   }
 
   return (
-    <div
-      className="flex flex-col gap-3 bg-zinc-800 border border-zinc-600 rounded-lg relative w-60 h-[22rem] p-4"
-      onMouseEnter={() => setShowActionButtons(true)}
-      onMouseLeave={() => setShowActionButtons(false)}
-    >
+    <div className="flex flex-col gap-4 bg-zinc-800 border border-zinc-600 rounded-lg relative w-60 min-h-[22rem] p-4">
       <img
-        src={`http://localhost:3333/getImage/${shirt.imageURL}`}
+        src={`http://localhost:3333/api/getImage/${shirt.imageURL}`}
         alt={shirt.title}
         className="flex-1 bg-zinc-700 object-cover rounded-lg"
       />
@@ -54,7 +52,7 @@ export function Shirt({ shirt, refetch }: { shirt: ShirtDTO; refetch: () => void
           href={shirt.link}
           target="_blank"
           rel="noopener noreferrer"
-          className="transition-colors cursor-pointer underline text-blue-300 hover:text-blue-400 w-max"
+          className="transition-colors cursor-pointer text-blue-300 hover:text-blue-400 w-max"
         >
           {shirt.title}
         </a>
@@ -78,103 +76,89 @@ export function Shirt({ shirt, refetch }: { shirt: ShirtDTO; refetch: () => void
       </div>
 
       {SHIRT_STATUS[shirt.status] ? (
-        <div
-          className={`text-center font-medium px-2 py-1 rounded col-span-2 ${SHIRT_STATUS[shirt.status].color}`}
+        <Popover
+          isOpen={statusPopoverIsOpen}
+          positions={["bottom", "top", "right", "left"]}
+          padding={4}
+          onClickOutside={() => setStatusPopoverIsOpen(false)}
+          align="end"
+          content={
+            <ul className="bg-zinc-800 text-white rounded-lg p-4 border border-zinc-600 shadow-sm shadow-zinc-500 flex flex-col gap-2">
+              {Object.values(SHIRT_STATUS).map((status, index) => (
+                <li className="flex-1">
+                  <button
+                    type="button"
+                    title={`Selecionar status ${status.text}`}
+                    className={`w-full px-2 py-1 rounded-lg cursor-pointer ${status.color} transition-opacity hover:opacity-85`}
+                    onClick={() => {
+                      handleChangeShirtStatus(index + 1, shirt.id);
+                      setStatusPopoverIsOpen(false);
+                    }}
+                  >
+                    {status.text}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          }
         >
-          {SHIRT_STATUS[shirt.status].text}
-        </div>
+          <button
+            type="button"
+            title="Mudar status"
+            aria-label="Mudar status"
+            onClick={() => setStatusPopoverIsOpen((prev) => !prev)}
+            className={`text-center font-medium px-2 h-10 rounded-lg cursor-pointer ${
+              SHIRT_STATUS[shirt.status].color
+            } hover:opacity-85 transition-opacity`}
+          >
+            {SHIRT_STATUS[shirt.status].text}
+          </button>
+        </Popover>
       ) : (
         ""
       )}
 
-      {showActionButtons && (
-        <div className="absolute -top-2 right-0 left-0 flex items-center justify-between">
-          <button
-            type="button"
-            aria-label="Apagar camisa"
-            className="flex items-center justify-center w-6 h-6 py-1 text-sm bg-red-700 text-white rounded-full hover:bg-red-800 cursor-pointer"
-            title="Apagar camisa"
-            onClick={() =>
-              confirm({
-                message: (
-                  <p>
-                    Tem certeza que deseja apagar a camisa <strong>{shirt.title}</strong>?
-                  </p>
-                ),
-                onConfirm: () => {
-                  fetch(`${import.meta.env.VITE_API_URL}/shirt/${shirt.id}`, {
-                    method: "DELETE",
-                  }).then(() => {
-                    refetch();
-                  });
-                },
-                title: "Apagar camisa",
-              })
-            }
-          >
-            <Trash2 size={14} />
-          </button>
+      <div className="flex items-center gap-2">
+        <Button
+          variant="destructive"
+          aria-label="Apagar camisa"
+          title="Apagar camisa"
+          onClick={() =>
+            confirm({
+              message: (
+                <p>
+                  Tem certeza que deseja apagar a camisa <strong>{shirt.title}</strong>?
+                </p>
+              ),
+              onConfirm: () => {
+                fetch(`${import.meta.env.VITE_API_URL}/shirt/${shirt.id}`, {
+                  method: "DELETE",
+                }).then(() => {
+                  refetch();
+                });
+              },
+              title: "Apagar camisa",
+            })
+          }
+        >
+          <Trash2 size={16} />
+        </Button>
 
-          <div className="flex gap-1">
-            <button
-              type="button"
-              aria-label="Editar camisa"
-              className="flex items-center justify-center w-6 h-6 text-sm bg-white rounded-full border border-zinc-700 hover:bg-zinc-50 cursor-pointer"
-              title="Editar camisa"
-              onClick={() =>
-                openModal({
-                  modalElement: (
-                    <ShirtForm id={shirt.id} personId={shirt.personId} refetch={refetch} />
-                  ),
-                  title: "Editar camisa",
-                })
-              }
-            >
-              <Pencil size={16} />
-            </button>
-
-            <button
-              type="button"
-              aria-label="Marcar para decidir"
-              className="flex items-center justify-center w-6 h-6 py-1 text-sm border border-zinc-600 bg-zinc-100 rounded-full hover:bg-zinc-200 cursor-pointer"
-              title="Marcar para decidir"
-              onClick={() => handleChangeShirtStatus(1, shirt.id)}
-            >
-              <SendToBack size={16} />
-            </button>
-
-            <button
-              type="button"
-              aria-label="Marcar como pendente"
-              className="flex items-center justify-center w-6 h-6 py-1 text-sm bg-yellow-600 text-white rounded-full hover:bg-yellow-700 cursor-pointer"
-              title="Marcar como pendente"
-              onClick={() => handleChangeShirtStatus(2, shirt.id)}
-            >
-              <Ellipsis size={16} />
-            </button>
-
-            <button
-              type="button"
-              aria-label="Marcar para compra"
-              className="flex items-center justify-center w-6 h-6 py-1 text-sm bg-green-600 text-white rounded-full hover:bg-green-700 cursor-pointer"
-              title="Marcar para compra"
-              onClick={() => handleChangeShirtStatus(3, shirt.id)}
-            >
-              <Check size={16} />
-            </button>
-
-            <button
-              type="button"
-              aria-label="Marcar não interesse"
-              className="flex items-center justify-center w-6 h-6 py-1 text-sm bg-red-600 text-white rounded-full hover:bg-red-700 cursor-pointer"
-              title="Marcar não interesse"
-              onClick={() => handleChangeShirtStatus(4, shirt.id)}
-            >
-              <X size={16} />
-            </button>
-          </div>
-        </div>
-      )}
+        <Button
+          variant="secondary"
+          className="flex-1"
+          title="Editar camisa"
+          aria-label="Editar camisa"
+          onClick={() =>
+            openModal({
+              modalElement: <ShirtForm id={shirt.id} personId={shirt.personId} refetch={refetch} />,
+              title: "Editar camisa",
+            })
+          }
+        >
+          <Pencil size={16} /> Editar
+        </Button>
+      </div>
     </div>
   );
 }

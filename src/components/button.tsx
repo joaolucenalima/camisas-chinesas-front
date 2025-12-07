@@ -13,8 +13,9 @@ export function Button({ variant = "primary", ...props }: ButtonProps) {
 
   return (
     <button
+      type="button"
       {...props}
-      className={`flex items-center justify-center gap-2 text-lg font-semibold cursor-pointer rounded-lg px-6 py-2 text-white ${buttonVariants[variant]} transition-colors ${props.className}`}
+      className={`flex items-center justify-center gap-2 text-lg font-semibold cursor-pointer rounded-lg px-4 h-10 text-white ${buttonVariants[variant]} transition-colors ${props.className}`}
     >
       {props.children}
     </button>

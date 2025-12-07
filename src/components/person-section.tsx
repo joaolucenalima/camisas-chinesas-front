@@ -77,7 +77,7 @@ export function PersonSection({
         ))}
 
         <button
-          className="w-60 h-[22rem] bg-zinc-900 border-2 border-dashed border-zinc-400 text-zinc-400 rounded-lg flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-zinc-800"
+          className="w-60 min-h-[22rem] bg-zinc-900 border-2 border-dashed border-zinc-400 text-zinc-400 rounded-lg flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-zinc-800"
           title="Adicionar camisa"
           onClick={() =>
             openModal({
