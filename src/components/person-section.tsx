@@ -1,7 +1,8 @@
 import { PencilLine, Plus } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import type { PersonDTO } from "../dtos/personDTO";
 import type { ShirtDTO } from "../dtos/shirtDTO";
+import { WebSocketsMessages } from "../dtos/webSocketDTO";
 import { useAppContext } from "../hooks/use-app-context";
 import { useFetch } from "../hooks/use-fetch";
 import { useModal } from "../hooks/use-modal";
@@ -17,7 +18,7 @@ export function PersonSection({
   getPersons: () => void;
 }) {
   const { openModal } = useModal();
-  const { dollarRate } = useAppContext();
+  const { dollarRate, socket } = useAppContext();
 
   const { data: shirts, refetch } = useFetch<ShirtDTO[]>(`/shirt/by-person/${person.id}`);
 
@@ -43,6 +44,16 @@ export function PersonSection({
 
     return null;
   }, [shirts, dollarRate]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.addEventListener("message", (event) => {
+      if (event.data.includes(WebSocketsMessages.SHIRT_MODIFICATION)) {
+        refetch();
+      }
+    });
+  }, [refetch, socket]);
 
   return (
     <section className="w-full">

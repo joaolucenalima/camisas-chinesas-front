@@ -1,7 +1,9 @@
 import { Plus } from "lucide-react";
+import { useEffect } from "react";
 import { Button } from "./components/button";
 import { PersonForm } from "./components/person-form";
 import { PersonSection } from "./components/person-section";
+import { WebSocketsMessages } from "./dtos/webSocketDTO";
 import { useAppContext } from "./hooks/use-app-context";
 import { useFetch } from "./hooks/use-fetch";
 import { useModal } from "./hooks/use-modal";
@@ -13,9 +15,19 @@ type PersonType = {
 
 function App() {
   const { openModal } = useModal();
-  const { dollarRate } = useAppContext();
+  const { dollarRate, socket } = useAppContext();
 
   const { data: persons, refetch } = useFetch<PersonType[]>("/person");
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.addEventListener("message", (event) => {
+      if (event.data.includes(WebSocketsMessages.PERSON_MODIFICATION)) {
+        refetch();
+      }
+    });
+  }, [refetch, socket]);
 
   return (
     <>

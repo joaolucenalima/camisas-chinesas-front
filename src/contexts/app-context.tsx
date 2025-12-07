@@ -4,7 +4,8 @@ import {
 
 export type AppContextType = {
 	dollarRate: number | null;
-	refresh: () => Promise<void>
+	refresh: () => Promise<void>,
+	socket: WebSocket | null
 };
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
