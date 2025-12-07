@@ -6,14 +6,27 @@ type AppProviderProps = {
   targetCurrency?: string;
 };
 
+const CACHE_KEY = "dollar-rate";
+const CACHE_TTL = 8 * 60 * 60 * 1000;
+
 export const AppProvider: React.FC<AppProviderProps> = ({ children, targetCurrency = "BRL" }) => {
   const [dollarRate, setDollarRate] = useState<number | null>(null);
 
   const socketRef = useRef<WebSocket>(null);
 
   const fetchRate = useCallback(async () => {
-    setDollarRate(5.31);
-    return;
+    const cached = localStorage.getItem(CACHE_KEY);
+
+    if (cached) {
+      const { value, timestamp } = JSON.parse(cached);
+
+      const isExpired = Date.now() - timestamp > CACHE_TTL;
+
+      if (!isExpired && typeof value === "number") {
+        setDollarRate(value);
+        return;
+      }
+    }
 
     const url = `https://v6.exchangerate-api.com/v6/${
       import.meta.env.VITE_EXCHANGE_RATE_KEY
@@ -26,6 +39,14 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, targetCurren
     const rate = data.conversion_rates[targetCurrency];
 
     if (typeof rate !== "number") throw new Error("Invalid response: missing rate");
+
+    localStorage.setItem(
+      CACHE_KEY,
+      JSON.stringify({
+        value: rate,
+        timestamp: Date.now(),
+      })
+    );
 
     setDollarRate(rate);
   }, [targetCurrency]);
@@ -43,5 +64,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, targetCurren
     return () => socketRef.current?.close();
   }, []);
 
-  return <AppContext.Provider value={{ dollarRate, refresh, socket: socketRef.current }}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider value={{ dollarRate, refresh, socket: socketRef.current }}>
+      {children}
+    </AppContext.Provider>
+  );
 };
