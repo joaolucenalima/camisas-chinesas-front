@@ -1,10 +1,10 @@
 import { Plus } from "lucide-react";
 import { useMemo } from "react";
-import { useAppContext } from "../contexts/use-app-context";
-import { useModal } from "../contexts/use-modal";
 import type { PersonDTO } from "../dtos/personDTO";
 import type { ShirtDTO } from "../dtos/shirtDTO";
+import { useAppContext } from "../hooks/use-app-context";
 import { useFetch } from "../hooks/use-fetch";
+import { useModal } from "../hooks/use-modal";
 import { Shirt } from "./shirt";
 import { ShirtForm } from "./shirt-form";
 

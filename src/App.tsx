@@ -2,9 +2,9 @@ import { Plus } from "lucide-react";
 import { AddPersonForm } from "./components/add-person-form";
 import { Button } from "./components/button";
 import { PersonSection } from "./components/person-section";
-import { useAppContext } from "./contexts/app-context";
-import { useModal } from "./contexts/use-modal";
+import { useAppContext } from "./hooks/use-app-context";
 import { useFetch } from "./hooks/use-fetch";
+import { useModal } from "./hooks/use-modal";
 
 type PersonType = {
   id: string;

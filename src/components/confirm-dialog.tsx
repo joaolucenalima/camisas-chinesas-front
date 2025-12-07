@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { useModal } from '../contexts/use-modal';
+import { useModal } from '../hooks/use-modal';
 import { Button } from './button';
 
 export type ConfirmDialogProps = {

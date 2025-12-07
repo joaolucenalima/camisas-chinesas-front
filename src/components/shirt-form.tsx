@@ -5,10 +5,10 @@ import {
 	type ClipboardEvent,
 	type FormEvent,
 } from "react";
-import { useAppContext } from "../contexts/use-app-context";
-import { useModal } from "../contexts/use-modal";
 import type { ShirtDTO } from "../dtos/shirtDTO";
+import { useAppContext } from "../hooks/use-app-context";
 import { useFetch } from "../hooks/use-fetch";
+import { useModal } from "../hooks/use-modal";
 import { Button } from "./button";
 import { Input } from "./input";
 
