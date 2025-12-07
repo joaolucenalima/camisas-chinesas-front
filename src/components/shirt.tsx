@@ -1,6 +1,6 @@
 import { Check, Ellipsis, Pencil, SendToBack, Trash2, X } from "lucide-react";
 import { useState } from "react";
-import { useModal } from "../contexts/useModal";
+import { useModal } from "../contexts/use-modal";
 import type { ShirtDTO } from "../dtos/shirtDTO";
 import { ShirtForm } from "./shirt-form";
 

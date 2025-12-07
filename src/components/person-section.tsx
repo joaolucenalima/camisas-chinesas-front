@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import { useMemo } from "react";
-import { useAppContext } from "../contexts/app-context";
-import { useModal } from "../contexts/useModal";
+import { useAppContext } from "../contexts/use-app-context";
+import { useModal } from "../contexts/use-modal";
 import type { PersonDTO } from "../dtos/personDTO";
 import type { ShirtDTO } from "../dtos/shirtDTO";
 import { useFetch } from "../hooks/use-fetch";

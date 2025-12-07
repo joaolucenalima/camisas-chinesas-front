@@ -3,7 +3,7 @@ import { AddPersonForm } from "./components/add-person-form";
 import { Button } from "./components/button";
 import { PersonSection } from "./components/person-section";
 import { useAppContext } from "./contexts/app-context";
-import { useModal } from "./contexts/useModal";
+import { useModal } from "./contexts/use-modal";
 import { useFetch } from "./hooks/use-fetch";
 
 type PersonType = {

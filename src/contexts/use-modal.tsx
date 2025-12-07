@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { ModalContext } from "./modal-provider";
 import { ConfirmDialog, type ConfirmDialogProps } from "../components/confirm-dialog";
+import { ModalContext } from "./modal-context";
 
 export const useModal = () => {
 	const context = useContext(ModalContext);

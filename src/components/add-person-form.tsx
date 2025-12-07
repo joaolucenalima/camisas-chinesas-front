@@ -1,5 +1,5 @@
 import type { FormEvent } from "react";
-import { useModal } from "../contexts/useModal";
+import { useModal } from "../contexts/use-modal";
 import { Button } from "./button";
 import { Input } from "./input";
 

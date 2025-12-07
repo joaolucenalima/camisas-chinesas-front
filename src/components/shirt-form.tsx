@@ -5,8 +5,8 @@ import {
 	type ClipboardEvent,
 	type FormEvent,
 } from "react";
-import { useAppContext } from "../contexts/app-context";
-import { useModal } from "../contexts/useModal";
+import { useAppContext } from "../contexts/use-app-context";
+import { useModal } from "../contexts/use-modal";
 import type { ShirtDTO } from "../dtos/shirtDTO";
 import { useFetch } from "../hooks/use-fetch";
 import { Button } from "./button";
