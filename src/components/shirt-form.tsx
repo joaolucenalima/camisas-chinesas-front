@@ -117,6 +117,15 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
     if (shirt?.imageURL && !selectedImage) {
       const imageUrl = `${import.meta.env.VITE_API_URL}/getImage/${shirt.imageURL}`;
       setSelectedImage(imageUrl);
+
+      fetch(imageUrl).then((response) => response.blob()).then((blob) => {
+        if (blob && fileInputRef.current) {
+          const file = new File([blob], shirt.imageURL, { type: blob.type });
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(file);
+          fileInputRef.current.files = dataTransfer.files;
+        }
+      });
     }
   }, [shirt?.imageURL, selectedImage]);
 
@@ -156,27 +165,27 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
         <h2>Tamanho *</h2>
 
         <div className="flex flex-wrap items-center gap-4 mt-1">
-						{SHIRTS_SIZES.map((size) => (
-						<label
-							key={size}
-							htmlFor={size}
-							className="cursor-pointer border border-zinc-600 w-10 h-10 
+          {SHIRTS_SIZES.map((size) => (
+            <label
+              key={size}
+              htmlFor={size}
+              className="cursor-pointer border border-zinc-600 w-10 h-10 
 							flex items-center justify-center rounded-lg transition-colors 
 							hover:bg-zinc-700 has-[input:checked]:bg-blue-500 
 							has-[input:checked]:text-white has-[input:checked]:border-blue-600
 							focus-within:outline-2 focus-within:outline-blue-500 focus-within:outline-offset-2"
-						>
-							<input
-							className="sr-only"
-							type="radio"
-							name="size"
-							id={size}
-							value={size}
-							defaultChecked={shirt?.size == size}
-							/>
-							<p className="text-sm font-medium select-none leading-none">{size}</p>
-						</label>
-						))}
+            >
+              <input
+                className="sr-only"
+                type="radio"
+                name="size"
+                id={size}
+                value={size}
+                defaultChecked={shirt?.size == size}
+              />
+              <p className="text-sm font-medium select-none leading-none">{size}</p>
+            </label>
+          ))}
         </div>
       </div>
 
