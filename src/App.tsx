@@ -19,34 +19,34 @@ function App() {
 
   return (
     <>
-      <h1 className="text-3xl font-semibold">Camisas chinesas</h1>
+      <header className="flex items-center justify-between p-6 w-full">
+        <h1 className="text-2xl font-semibold">Camisas chinesas</h1>
 
-      <p>Aplicação para fazer pedidos de camisas de time da china</p>
+        <div className="flex items-center gap-8">
+          <div className="bg-zinc-800 font-semibold py-3 px-5 rounded-lg leading-none">
+            <p>
+              Dólar hoje:{" "}
+              {dollarRate?.toLocaleString("pt-BR", {
+                currency: "BRL",
+                style: "currency",
+              })}
+            </p>
+          </div>
 
-      <div className="flex items-center justify-between w-full">
-        <p>
-          Cotação do dólar:{" "}
-          <span className="font-semibold">
-            {dollarRate?.toLocaleString("pt-BR", {
-              currency: "BRL",
-              style: "currency",
-            })}
-          </span>
-        </p>
+          <Button
+            onClick={() =>
+              openModal({
+                title: "Adicionar pessoa",
+                modalElement: <AddPersonForm personMutate={refetch} />,
+              })
+            }
+          >
+            <Plus /> Adicionar pessoa
+          </Button>
+        </div>
+      </header>
 
-        <Button
-          onClick={() =>
-            openModal({
-              title: "Adicionar pessoa",
-              modalElement: <AddPersonForm personMutate={refetch} />,
-            })
-          }
-        >
-          Adicionar pessoa <Plus />
-        </Button>
-      </div>
-
-      <main className="w-full flex flex-col gap-4 mt-2">
+      <main className="w-full flex flex-col gap-4 p-6">
         {persons && persons.map((person) => <PersonSection key={person.id} person={person} />)}
       </main>
     </>

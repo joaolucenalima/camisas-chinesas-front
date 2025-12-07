@@ -7,10 +7,10 @@ import {
 } from "react";
 import { useAppContext } from "../contexts/app-context";
 import { useModal } from "../contexts/useModal";
+import type { ShirtDTO } from "../dtos/shirtDTO";
+import { useFetch } from "../hooks/use-fetch";
 import { Button } from "./button";
 import { Input } from "./input";
-import { useFetch } from "../hooks/use-fetch";
-import type { ShirtDTO } from "../dtos/shirtDTO";
 
 interface ShirtForm {
 	id?: number;
@@ -164,7 +164,7 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
 						<label
 							key={size}
 							htmlFor={size}
-							className="cursor-pointer border border-zinc-400 w-9 h-9 flex items-center justify-center rounded hover:border-blue-400 has-[input:checked]:bg-blue-500 has-[input:checked]:text-white has-[input:checked]:border-blue-600"
+							className="cursor-pointer border border-zinc-600 w-9 h-9 flex items-center justify-center rounded transition-colors hover:bg-zinc-700 has-[input:checked]:bg-blue-500 has-[input:checked]:text-white has-[input:checked]:border-blue-600"
 						>
 							<input
 								className="sr-only"
@@ -174,7 +174,7 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
 								value={size}
 								defaultChecked={shirt?.size == size}
 							/>
-							<p className="text-sm select-none">{size}</p>
+							<p className="text-sm font-medium select-none">{size}</p>
 						</label>
 					))}
 				</div>

@@ -28,7 +28,14 @@ export function AddPersonForm({ personMutate }: { personMutate: () => void }) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-4">
-      <Input label="Nome" name="name" autoComplete="off" required />
+      <Input
+        label="Nome"
+        name="name"
+        placeholder="Digite o nome da pessoa"
+        autoComplete="off"
+        autoFocus
+        required
+      />
 
       <Button type="submit">Salvar</Button>
     </form>

@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
-import { Button } from './button';
 import { useModal } from '../contexts/useModal';
+import { Button } from './button';
 
 export type ConfirmDialogProps = {
   message: string | ReactNode;
@@ -31,7 +31,7 @@ export function ConfirmDialog({
 
       <div className='flex items-center justify-end gap-4'>
         <button type="button" onClick={handleCancel}
-          className='text-lg cursor-pointer rounded px-6 py-2 border border-zinc-300 bg-zinc-200 hover:bg-zinc-300 transition-colors'
+          className='text-lg cursor-pointer rounded-lg px-6 py-2 border border-zinc-700 bg-zinc-600 hover:bg-zinc-700 transition-colors'
         >
           Cancelar
         </button>
