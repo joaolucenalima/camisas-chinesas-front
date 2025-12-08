@@ -58,7 +58,7 @@ export function PersonSection({
   return (
     <section className="w-full">
       <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2 mb-4">
-        <h2 className="text-3xl font-semibold">{person.name}</h2>
+        <h2 className="text-2xl font-semibold">{person.name}</h2>
 
         <button
           onClick={() =>
