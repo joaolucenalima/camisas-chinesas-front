@@ -60,7 +60,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children, targetCurren
   }, [fetchRate]);
 
   useEffect(() => {
-    socketRef.current = new WebSocket("ws://localhost:3333");
+    socketRef.current = new WebSocket(`ws://${import.meta.env.VITE_API_URL.split('://')[1]}`);
     return () => socketRef.current?.close();
   }, []);
 

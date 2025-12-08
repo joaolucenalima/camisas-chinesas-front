@@ -42,7 +42,7 @@ export function Shirt({ shirt, refetch }: { shirt: ShirtDTO; refetch: () => void
   return (
     <div className="flex flex-col gap-4 bg-zinc-800 border border-zinc-600 rounded-lg relative w-60 min-h-[22rem] p-4">
       <img
-        src={`${window.location.origin}/api/getImage/${shirt.imageURL}`}
+        src={`${import.meta.env.VITE_API_URL}/api/getImage/${shirt.imageURL}`}
         alt={shirt.title}
         className="flex-1 bg-zinc-700 object-cover rounded-lg"
       />
