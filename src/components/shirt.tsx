@@ -52,7 +52,7 @@ export function Shirt({ shirt, refetch }: { shirt: ShirtDTO; refetch: () => void
           href={shirt.link}
           target="_blank"
           rel="noopener noreferrer"
-          className="transition-colors cursor-pointer text-blue-300 hover:text-blue-400 w-max"
+          className="transition-colors cursor-pointer text-blue-300 hover:text-blue-400 hover:underline"
         >
           {shirt.title}
         </a>
