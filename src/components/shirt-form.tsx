@@ -1,8 +1,13 @@
 import { X } from "lucide-react";
-import { useEffect, useRef, useState, type ClipboardEvent, type FormEvent } from "react";
+import {
+  type ClipboardEvent,
+  type FormEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import type { PersonDTO } from "../dtos/personDTO";
 import type { ShirtDTO } from "../dtos/shirtDTO";
-import { useAppContext } from "../hooks/use-app-context";
 import { useFetch } from "../hooks/use-fetch";
 import { useModal } from "../hooks/use-modal";
 import { Button } from "./button";
@@ -17,7 +22,6 @@ interface ShirtForm {
 const SHIRTS_SIZES = ["XS", "S", "M", "L", "XL", "2XL", "3XL"];
 
 export function ShirtForm({ id, personId, refetch }: ShirtForm) {
-  const { dollarRate } = useAppContext();
   const { closeModal } = useModal();
 
   const { data: shirt } = useFetch<ShirtDTO>(`/shirt/${id}`, !!id);
@@ -80,7 +84,9 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
     const formData = new FormData(e.currentTarget);
 
     const priceString = (formData.get("price") as string) || "0";
-    const priceInCents = Math.round(Number(priceString.replace(/[$,]/g, "")) * 100);
+    const priceInCents = Math.round(
+      Number(priceString.replace(/[$,]/g, "")) * 100,
+    );
 
     const submitData = new FormData();
 
@@ -118,47 +124,43 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
       const imageUrl = `${import.meta.env.VITE_API_URL}/getImage/${shirt.imageURL}`;
       setSelectedImage(imageUrl);
 
-      fetch(imageUrl).then((response) => response.blob()).then((blob) => {
-        if (blob && fileInputRef.current) {
-          const file = new File([blob], shirt.imageURL, { type: blob.type });
-          const dataTransfer = new DataTransfer();
-          dataTransfer.items.add(file);
-          fileInputRef.current.files = dataTransfer.files;
-        }
-      });
+      fetch(imageUrl)
+        .then((response) => response.blob())
+        .then((blob) => {
+          if (blob && fileInputRef.current) {
+            const file = new File([blob], shirt.imageURL, { type: blob.type });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInputRef.current.files = dataTransfer.files;
+          }
+        });
     }
   }, [shirt?.imageURL, selectedImage]);
 
   if (id && !shirt) return null;
 
   return (
-    <form className="flex flex-col gap-5" onSubmit={handleSubmit} encType="multipart/form-data">
+    <form
+      className="flex flex-col gap-5"
+      onSubmit={handleSubmit}
+      encType="multipart/form-data"
+    >
       <Input label="Pessoa" defaultValue={person?.name} readOnly disabled />
 
       <Input label="Nome *" name="title" defaultValue={shirt?.title} />
 
       <div className="flex items-end gap-4">
         <Input
-          label="Preço (dólares) *"
-          value={price.toLocaleString("en-US", {
+          label="Preço (R$) *"
+          value={price.toLocaleString("pt-BR", {
             style: "currency",
-            currency: "USD",
+            currency: "BRL",
           })}
           onChange={handleChangePrice}
           className="flex-1"
           name="price"
           id="price"
         />
-
-        <span className="text-center">
-          <p>Preço em reais:</p>
-          <p>
-            {(price * (dollarRate || 1)).toLocaleString("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-            }) || "R$ 0"}
-          </p>
-        </span>
       </div>
 
       <div>
@@ -169,9 +171,9 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
             <label
               key={size}
               htmlFor={size}
-              className="cursor-pointer border border-zinc-600 w-10 h-10 
-							flex items-center justify-center rounded-lg transition-colors 
-							hover:bg-zinc-700 has-[input:checked]:bg-blue-500 
+              className="cursor-pointer border border-zinc-600 w-10 h-10
+							flex items-center justify-center rounded-lg transition-colors
+							hover:bg-zinc-700 has-[input:checked]:bg-blue-500
 							has-[input:checked]:text-white has-[input:checked]:border-blue-600
 							focus-within:outline-2 focus-within:outline-blue-500 focus-within:outline-offset-2"
             >
@@ -181,9 +183,11 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
                 name="size"
                 id={size}
                 value={size}
-                defaultChecked={shirt?.size == size}
+                defaultChecked={shirt?.size === size}
               />
-              <p className="text-sm font-medium select-none leading-none">{size}</p>
+              <p className="text-sm font-medium select-none leading-none">
+                {size}
+              </p>
             </label>
           ))}
         </div>

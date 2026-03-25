@@ -15,7 +15,7 @@ type PersonType = {
 
 function App() {
   const { openModal } = useModal();
-  const { dollarRate, socket } = useAppContext();
+  const { socket } = useAppContext();
 
   const { data: persons, refetch } = useFetch<PersonType[]>("/person");
 
@@ -34,16 +34,6 @@ function App() {
       <header className="flex items-center justify-between flex-wrap gap-4 p-6 w-full">
         <h1 className="flex-1 text-2xl font-semibold">Camisas chinesas</h1>
 
-        <div className="bg-zinc-800 font-semibold py-3 px-5 rounded-lg leading-none">
-          <p>
-            Dólar:{" "}
-            {dollarRate?.toLocaleString("pt-BR", {
-              currency: "BRL",
-              style: "currency",
-            })}
-          </p>
-        </div>
-
         <Button
           onClick={() =>
             openModal({
@@ -57,10 +47,9 @@ function App() {
       </header>
 
       <main className="w-full flex flex-col gap-4 p-6">
-        {persons &&
-          persons.map((person) => (
-            <PersonSection key={person.id} person={person} getPersons={refetch} />
-          ))}
+        {persons?.map((person) => (
+          <PersonSection key={person.id} person={person} getPersons={refetch} />
+        ))}
       </main>
     </>
   );

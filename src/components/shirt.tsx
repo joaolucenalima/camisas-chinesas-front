@@ -22,7 +22,13 @@ const SHIRT_STATUS = {
   4: { text: "Sem interesse", color: "bg-red-700" },
 };
 
-export function Shirt({ shirt, refetch }: { shirt: ShirtDTO; refetch: () => void }) {
+export function Shirt({
+  shirt,
+  refetch,
+}: {
+  shirt: ShirtDTO;
+  refetch: () => void;
+}) {
   const { openModal, confirm } = useModal();
 
   const [statusPopoverIsOpen, setStatusPopoverIsOpen] = useState(false);
@@ -63,16 +69,18 @@ export function Shirt({ shirt, refetch }: { shirt: ShirtDTO; refetch: () => void
       <div className="flex items-center justify-between">
         {shirt.priceInCents ? (
           <p className="text-zinc-300">
-            {(shirt.priceInCents / 100).toLocaleString("en-US", {
+            {(shirt.priceInCents / 100).toLocaleString("pt-BR", {
               style: "currency",
-              currency: "USD",
+              currency: "BRL",
             })}
           </p>
         ) : (
           "-"
         )}
 
-        <p className="py-1 px-3 bg-zinc-700 font-medium rounded-2xl">Tamanho {shirt.size}</p>
+        <p className="py-1 px-3 bg-zinc-700 font-medium rounded-2xl">
+          Tamanho {shirt.size}
+        </p>
       </div>
 
       {SHIRT_STATUS[shirt.status] ? (
@@ -85,7 +93,7 @@ export function Shirt({ shirt, refetch }: { shirt: ShirtDTO; refetch: () => void
           content={
             <ul className="bg-zinc-800 text-white rounded-lg p-4 border border-zinc-600 shadow-sm shadow-zinc-500 flex flex-col gap-2">
               {Object.values(SHIRT_STATUS).map((status, index) => (
-                <li className="flex-1">
+                <li className="flex-1" key={status.text}>
                   <button
                     type="button"
                     title={`Selecionar status ${status.text}`}
@@ -127,7 +135,8 @@ export function Shirt({ shirt, refetch }: { shirt: ShirtDTO; refetch: () => void
             confirm({
               message: (
                 <p>
-                  Tem certeza que deseja apagar a camisa <strong>{shirt.title}</strong>?
+                  Tem certeza que deseja apagar a camisa{" "}
+                  <strong>{shirt.title}</strong>?
                 </p>
               ),
               onConfirm: () => {
@@ -151,7 +160,13 @@ export function Shirt({ shirt, refetch }: { shirt: ShirtDTO; refetch: () => void
           aria-label="Editar camisa"
           onClick={() =>
             openModal({
-              modalElement: <ShirtForm id={shirt.id} personId={shirt.personId} refetch={refetch} />,
+              modalElement: (
+                <ShirtForm
+                  id={shirt.id}
+                  personId={shirt.personId}
+                  refetch={refetch}
+                />
+              ),
               title: "Editar camisa",
             })
           }

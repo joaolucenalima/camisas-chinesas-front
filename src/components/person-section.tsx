@@ -18,24 +18,23 @@ export function PersonSection({
   getPersons: () => void;
 }) {
   const { openModal } = useModal();
-  const { dollarRate, socket } = useAppContext();
+  const { socket } = useAppContext();
 
-  const { data: shirts, refetch } = useFetch<ShirtDTO[]>(`/shirt/by-person/${person.id}`);
+  const { data: shirts, refetch } = useFetch<ShirtDTO[]>(
+    `/shirt/by-person/${person.id}`,
+  );
 
   const shirtsAmount = useMemo(() => {
     const amount = shirts
       ?.filter((shirt) => shirt.status === 3)
       .reduce((amount, shirt) => {
-        return (amount += shirt.priceInCents);
+        const newPrice = amount + shirt.priceInCents;
+        return newPrice;
       }, 0);
 
     if (amount) {
       return {
-        amountInDollar: (amount / 100).toLocaleString("en-US", {
-          currency: "USD",
-          style: "currency",
-        }),
-        amountInReal: ((amount / 100) * (dollarRate || 1)).toLocaleString("pt-BR", {
+        amountInReal: (amount / 100).toLocaleString("pt-BR", {
           currency: "BRL",
           style: "currency",
         }),
@@ -43,7 +42,7 @@ export function PersonSection({
     }
 
     return null;
-  }, [shirts, dollarRate]);
+  }, [shirts]);
 
   useEffect(() => {
     if (!socket) return;
@@ -61,10 +60,13 @@ export function PersonSection({
         <h2 className="text-2xl font-semibold">{person.name}</h2>
 
         <button
+          type="button"
           onClick={() =>
             openModal({
               title: "Editar pessoa",
-              modalElement: <PersonForm personId={person.id} refetch={getPersons} />,
+              modalElement: (
+                <PersonForm personId={person.id} refetch={getPersons} />
+              ),
             })
           }
           className="cursor-pointer transition-colors text-zinc-400 hover:text-zinc-300"
@@ -75,7 +77,7 @@ export function PersonSection({
 
         {shirtsAmount ? (
           <p className="text-zinc-300 text-lg leading-none">
-            Total: {shirtsAmount.amountInDollar} ({shirtsAmount.amountInReal})
+            Total: {shirtsAmount.amountInReal}
           </p>
         ) : (
           ""
@@ -88,12 +90,15 @@ export function PersonSection({
         ))}
 
         <button
+          type="button"
           className="w-60 min-h-[22rem] bg-zinc-900 border-2 border-dashed border-zinc-400 text-zinc-400 rounded-lg flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-zinc-800"
           title="Adicionar camisa"
           onClick={() =>
             openModal({
               title: "Adicionar camisa",
-              modalElement: <ShirtForm personId={person.id} refetch={refetch} />,
+              modalElement: (
+                <ShirtForm personId={person.id} refetch={refetch} />
+              ),
             })
           }
         >

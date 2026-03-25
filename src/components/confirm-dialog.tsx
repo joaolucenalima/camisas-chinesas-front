@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useModal } from "../hooks/use-modal";
 import { Button } from "./button";
 
@@ -8,7 +8,11 @@ export type ConfirmDialogProps = {
   onCancel?: () => void;
 };
 
-export function ConfirmDialog({ message, onConfirm, onCancel }: ConfirmDialogProps) {
+export function ConfirmDialog({
+  message,
+  onConfirm,
+  onCancel,
+}: ConfirmDialogProps) {
   const { closeModal } = useModal();
 
   const handleConfirm = () => {
