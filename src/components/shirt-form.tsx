@@ -83,9 +83,15 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
 
     const formData = new FormData(e.currentTarget);
 
-    const priceString = (formData.get("price") as string) || "0";
+    const priceString = formData.get("price")?.toString() || "0";
+
     const priceInCents = Math.round(
-      Number(priceString.replace(/[$,]/g, "")) * 100,
+      Number(
+        priceString
+          .replace(/[^\d,.-]/g, "")
+          .replace(/\./g, "")
+          .replace(",", "."),
+      ) * 100,
     );
 
     const submitData = new FormData();
@@ -157,9 +163,9 @@ export function ShirtForm({ id, personId, refetch }: ShirtForm) {
             currency: "BRL",
           })}
           onChange={handleChangePrice}
-          className="flex-1"
           name="price"
           id="price"
+          className="flex-1"
         />
       </div>
 
