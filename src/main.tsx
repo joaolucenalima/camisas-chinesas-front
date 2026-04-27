@@ -1,12 +1,10 @@
 import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
-import { AppProvider } from "./contexts/app-provider";
-import { ModalProvider } from "./contexts/modal-provider";
+import { AppProvider } from "@/app/providers/socket/app-provider.tsx";
+import RootApp from "@/app/root-app.tsx";
+import "@/style.css";
 
 createRoot(document.getElementById("root")!).render(
   <AppProvider>
-    <ModalProvider>
-      <App />
-    </ModalProvider>
+    <RootApp />
   </AppProvider>
 );
