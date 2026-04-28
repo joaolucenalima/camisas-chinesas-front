@@ -1,9 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  shirtQueryKeys,
-  updateShirtStatus,
-} from "@/entities/shirt/api/shirt-api";
+import { updateShirtStatus } from "@/entities/shirt/api/shirt-api";
 import type { ShirtStatus } from "@/entities/shirt/model/types";
+import { shirtQueryKeys } from "@/entities/shirt/api/query-keys";
 
 type UseUpdateShirtStatusMutationInput = {
   personId: string;

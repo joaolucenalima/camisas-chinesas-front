@@ -1,5 +1,5 @@
 import type { Shirt } from "@/entities/shirt/model/types";
-import { useModal } from "@/shared/lib/modal/use-modal";
+import { useModal } from "@/app/providers/modal/use-modal";
 import { useUpsertShirtMutation } from "@/features/add-shirt/api/use-upsert-shirt-mutation";
 
 export type SubmitShirtInput = {

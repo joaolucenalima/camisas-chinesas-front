@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useModal } from "@/shared/lib/modal/use-modal";
+import { useModal } from "@/app/providers/modal/use-modal";
 import { Button } from "@/shared/ui/button";
 
 type ConfirmDialogProps = {

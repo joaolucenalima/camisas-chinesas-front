@@ -1,31 +1,25 @@
 import { httpClient } from "@/shared/api/http-client";
 import type { Shirt, ShirtStatus, UpsertShirtInput } from "@/entities/shirt/model/types";
 
-export const shirtQueryKeys = {
-  all: ["shirt"] as const,
-  byPerson: (personId: string) => ["shirt", "person", personId] as const,
-  detail: (shirtId: number) => ["shirt", shirtId] as const,
-};
-
 export async function getShirtsByPerson(personId: string) {
-  const { data } = await httpClient.get<Shirt[]>(`/shirt/by-person/${personId}`);
+  const data = await httpClient.get<Shirt[]>(`/shirt/by-person/${personId}`);
   return data;
 }
 
 export async function getShirtById(shirtId: number) {
-  const { data } = await httpClient.get<Shirt>(`/shirt/${shirtId}`);
+  const data = await httpClient.get<Shirt>(`/shirt/${shirtId}`);
   return data;
 }
 
 export async function createShirt(payload: UpsertShirtInput) {
   const formData = buildShirtFormData(payload);
-  const { data } = await httpClient.post<Shirt>("/shirt", formData);
+  const data = await httpClient.post<Shirt>("/shirt", formData);
   return data;
 }
 
 export async function updateShirt(shirtId: number, payload: UpsertShirtInput) {
   const formData = buildShirtFormData(payload);
-  const { data } = await httpClient.put<Shirt>(`/shirt/${shirtId}`, formData);
+  const data = await httpClient.put<Shirt>(`/shirt/${shirtId}`, formData);
   return data;
 }
 
@@ -34,7 +28,7 @@ export async function deleteShirt(shirtId: number) {
 }
 
 export async function updateShirtStatus(shirtId: number, status: ShirtStatus) {
-  const { data } = await httpClient.put<Shirt>(`/shirt/${shirtId}`, { status });
+  const data = await httpClient.put<Shirt>(`/shirt/${shirtId}`, { status });
   return data;
 }
 

@@ -12,7 +12,6 @@ export default defineConfig({
     },
   },
   server: {
-    host: true,
     allowedHosts: process.env.VITE_ALLOWED_HOSTS
       ? process.env.VITE_ALLOWED_HOSTS.split(",")
       : ["all"],

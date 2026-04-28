@@ -1,4 +1,4 @@
-import { useModal } from "@/shared/lib/modal/use-modal";
+import { useModal } from "@/app/providers/modal/use-modal";
 import { useUpsertPersonMutation } from "@/features/add-person/api/use-upsert-person-mutation";
 
 export function useAddPerson(personId?: string) {

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Modal } from "@/shared/ui/modal";
-import { ModalContext, type ModalState } from "@/shared/lib/modal/modal-context";
+import { ModalContext, type ModalState } from "./modal-context";
 
 type ModalProviderProps = {
   children: ReactNode;

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getPersons, personQueryKeys } from "@/entities/person/api/person-api";
+import { getPersons } from "../api/person-api";
+import { personQueryKeys } from "../api/query-keys";
 
 export function usePersonsQuery() {
   return useQuery({

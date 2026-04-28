@@ -5,7 +5,7 @@ import { useShirtsQuery } from "@/entities/shirt/model/use-shirts-query";
 import { AddPersonForm } from "@/features/add-person/ui/add-person-form";
 import { AddShirtForm } from "@/features/add-shirt/ui/add-shirt-form";
 import { SelectShirt } from "@/features/select-shirt/ui/select-shirt";
-import { useModal } from "@/shared/lib/modal/use-modal";
+import { useModal } from "@/app/providers/modal/use-modal";
 
 type PersonSectionProps = {
   person: Person;

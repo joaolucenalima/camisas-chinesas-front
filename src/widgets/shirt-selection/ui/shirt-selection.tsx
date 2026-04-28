@@ -1,20 +1,20 @@
 import { useEffect } from "react";
 import { Plus } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAppSocket } from "@/app/providers/socket/use-app-socket";
-import { personQueryKeys } from "@/entities/person/api/person-api";
 import { usePersonsQuery } from "@/entities/person/model/use-persons-query";
-import { shirtQueryKeys } from "@/entities/shirt/api/shirt-api";
 import { AddPersonForm } from "@/features/add-person/ui/add-person-form";
-import { useModal } from "@/shared/lib/modal/use-modal";
+import { useModal } from "@/app/providers/modal/use-modal";
 import { websocketMessages } from "@/shared/lib/websocket-messages";
 import { Button } from "@/shared/ui/button";
 import { PersonSection } from "@/widgets/person-section/ui/person-section";
+import { useSocket } from "@/app/providers/socket/use-socket";
+import { personQueryKeys } from "@/entities/person/api/query-keys";
+import { shirtQueryKeys } from "@/entities/shirt/api/query-keys";
 
 export function ShirtSelection() {
   const queryClient = useQueryClient();
   const { openModal } = useModal();
-  const { socket } = useAppSocket();
+  const { socket } = useSocket();
   const { data: persons } = usePersonsQuery();
 
   useEffect(() => {

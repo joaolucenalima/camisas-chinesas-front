@@ -3,7 +3,7 @@ import { Popover } from "react-tiny-popover";
 import { shirtStatusView, type Shirt } from "@/entities/shirt/model/types";
 import { AddShirtForm } from "@/features/add-shirt/ui/add-shirt-form";
 import { useSelectShirt } from "@/features/select-shirt/model/use-select-shirt";
-import { useModal } from "@/shared/lib/modal/use-modal";
+import { useModal } from "@/app/providers/modal/use-modal";
 import { Button } from "@/shared/ui/button";
 import { ConfirmDialog } from "@/shared/ui/confirm-dialog";
 

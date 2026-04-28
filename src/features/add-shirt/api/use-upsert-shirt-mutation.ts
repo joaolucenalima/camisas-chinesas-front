@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createShirt,
-  shirtQueryKeys,
   updateShirt,
 } from "@/entities/shirt/api/shirt-api";
 import type { UpsertShirtInput } from "@/entities/shirt/model/types";
+import { shirtQueryKeys } from "@/entities/shirt/api/query-keys";
 
 type UseUpsertShirtMutationInput = {
   shirtId?: number;

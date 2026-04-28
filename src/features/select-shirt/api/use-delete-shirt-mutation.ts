@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteShirt, shirtQueryKeys } from "@/entities/shirt/api/shirt-api";
+import { deleteShirt } from "@/entities/shirt/api/shirt-api";
+import { shirtQueryKeys } from "@/entities/shirt/api/query-keys";
 
 type UseDeleteShirtMutationInput = {
   personId: string;

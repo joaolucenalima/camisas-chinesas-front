@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { useModal } from "@/shared/lib/modal/use-modal";
+import { useModal } from "@/app/providers/modal/use-modal";
 
 export function Modal() {
   const { closeModal, modal } = useModal();

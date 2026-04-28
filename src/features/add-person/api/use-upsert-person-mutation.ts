@@ -1,10 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  createPerson,
-  personQueryKeys,
-  updatePerson,
-} from "@/entities/person/api/person-api";
+import { createPerson, updatePerson } from "@/entities/person/api/person-api";
 import type { UpsertPersonInput } from "@/entities/person/model/types";
+import { personQueryKeys } from "@/entities/person/api/query-keys";
 
 type UseUpsertPersonMutationInput = {
   personId?: string;
