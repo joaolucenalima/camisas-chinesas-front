@@ -107,7 +107,6 @@ httpClient.interceptors.response.use(
       if (status === 401) {
         clearAuthToken();
         logoutCallback?.();
-        return Promise.reject(error);
       }
 
       const message = body?.error ?? error.message;
