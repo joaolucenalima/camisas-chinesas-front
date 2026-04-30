@@ -5,6 +5,7 @@ import { useLoginMutation, useRegisterMutation } from "@/features/auth/model";
 import {
   clearAuthToken,
   httpClient,
+  registerAuthSessionCallback,
   registerLogoutCallback,
   setAuthToken,
 } from "@/shared/api/http-client";
@@ -55,7 +56,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     registerLogoutCallback(clearSession);
-  }, [clearSession]);
+    registerAuthSessionCallback((authSession) => {
+      queryClient.setQueryData(userQueryKeys.me, authSession.user);
+    });
+  }, [clearSession, queryClient]);
 
   const isAuthLoading =
     isLoading || isFetching || loginMutation.isPending || registerMutation.isPending;

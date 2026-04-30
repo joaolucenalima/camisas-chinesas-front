@@ -1,4 +1,5 @@
-import axios, { type AxiosResponse, type InternalAxiosRequestConfig } from "axios";
+import type { AuthSession } from "@/entities/user/model/types";
+import axios, { AxiosHeaders, type AxiosResponse, type InternalAxiosRequestConfig } from "axios";
 import { toast } from "sonner";
 
 interface ApiSuccessResponse<T> {
@@ -15,6 +16,10 @@ export type ApiResponse<T = unknown> = ApiSuccessResponse<T> | ApiErrorResponse;
 
 type LogoutFn = () => void;
 let logoutCallback: LogoutFn | null = null;
+
+type AuthSessionUpdateFn = (session: AuthSession) => void;
+let authSessionUpdateCallback: AuthSessionUpdateFn | null = null;
+
 const AUTH_TOKEN_STORAGE_KEY = "auth_token";
 
 export function getAuthToken() {
@@ -23,7 +28,6 @@ export function getAuthToken() {
 
 export function setAuthToken(token: string) {
   localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, token);
-  httpClient.defaults.headers.common.Authorization = `Bearer ${token}`;
 }
 
 export function clearAuthToken() {
@@ -33,6 +37,10 @@ export function clearAuthToken() {
 
 export function registerLogoutCallback(fn: LogoutFn) {
   logoutCallback = fn;
+}
+
+export function registerAuthSessionCallback(fn: AuthSessionUpdateFn) {
+  authSessionUpdateCallback = fn;
 }
 
 declare module "axios" {
@@ -62,18 +70,23 @@ const apiBaseUrl = (import.meta.env.VITE_API_URL ?? defaultApiBaseUrl).replace(/
 
 export const httpClient = axios.create({
   baseURL: apiBaseUrl,
-  timeout: 5000,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-const initialToken = getAuthToken();
-if (initialToken) {
-  httpClient.defaults.headers.common.Authorization = `Bearer ${initialToken}`;
-}
-
 httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  const token = getAuthToken();
+
+  if (token) {
+    if (!config.headers) {
+      config.headers = new AxiosHeaders();
+    }
+
+    config.headers.set("Authorization", `Bearer ${token}`);
+  }
+
   if (config.params) {
     config.params = Object.fromEntries(
       Object.entries(config.params as Record<string, unknown>).filter(
@@ -81,12 +94,52 @@ httpClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
           v !== null &&
           v !== undefined &&
           v !== "" &&
-          !(typeof v === "object" && v !== null && Object.keys(v).length === 0),
+          !(typeof v === "object" && Object.keys(v).length === 0),
       ),
     );
   }
+
   return config;
 });
+
+let isRefreshing = false;
+let refreshFailed = false;
+
+let failedQueue: {
+  resolve: () => void;
+  reject: (err: unknown) => void;
+}[] = [];
+
+function processQueue(error: unknown) {
+  failedQueue.forEach((p) => {
+    if (error) p.reject(error);
+    else p.resolve();
+  });
+
+  failedQueue = [];
+}
+
+async function refreshAuthSession() {
+  const response = await fetch(`${apiBaseUrl}/auth/refresh`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Refresh failed with status ${response.status}`);
+  }
+
+  const body = (await response.json()) as ApiResponse<AuthSession>;
+
+  if (body?.error) {
+    throw new Error(body.error);
+  }
+
+  return (body?.data ?? body) as AuthSession;
+}
 
 httpClient.interceptors.response.use(
   (response: AxiosResponse<ApiResponse>) => {
@@ -99,20 +152,60 @@ httpClient.interceptors.response.use(
 
     return (body?.data ?? body) as never;
   },
-  (error: unknown) => {
-    if (axios.isAxiosError(error)) {
-      const status = error.response?.status;
-      const body = error.response?.data as ApiResponse | undefined;
+  async (error: unknown) => {
+    if (!axios.isAxiosError(error)) {
+      return Promise.reject(error);
+    }
 
-      if (status === 401) {
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry?: boolean;
+    };
+
+    const status = error.response?.status;
+    const body = error.response?.data as ApiResponse | undefined;
+
+    if (status === 401 && !originalRequest._retry && !refreshFailed) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({
+            resolve: () => {
+              resolve(httpClient(originalRequest));
+            },
+            reject,
+          });
+        });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        const authSession = await refreshAuthSession();
+        const newToken = authSession.accessToken;
+
+        setAuthToken(newToken);
+        authSessionUpdateCallback?.(authSession);
+
+        processQueue(null);
+
+        return httpClient(originalRequest);
+      } catch (refreshError) {
+        refreshFailed = true;
+
+        processQueue(refreshError);
+
         clearAuthToken();
         logoutCallback?.();
-      }
 
-      const message = body?.error ?? error.message;
-      if (message) {
-        toast.error(message);
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
+    }
+
+    const message = body?.error ?? error.message;
+    if (status !== 401 && message) {
+      toast.error(message);
     }
 
     return Promise.reject(error);
