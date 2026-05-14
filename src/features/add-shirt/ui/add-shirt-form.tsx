@@ -89,8 +89,12 @@ export function AddShirtForm({ personId, personName, shirt }: AddShirtFormProps)
     const formData = new FormData(event.currentTarget);
     const priceString = String(formData.get("price") || "0");
     const priceInCents = Math.round(
-      Number(priceString.replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", ".")) *
-        100,
+      Number(
+        priceString
+          .replace(/[^\d,.-]/g, "")
+          .replace(/\./g, "")
+          .replace(",", "."),
+      ) * 100,
     );
 
     submitShirt({
@@ -98,20 +102,17 @@ export function AddShirtForm({ personId, personName, shirt }: AddShirtFormProps)
       size: String(formData.get("size") || ""),
       link: String(formData.get("link") || ""),
       priceInCents,
-      image: (formData.get("image") as File)?.size
-        ? (formData.get("image") as File)
-        : undefined,
+      image: (formData.get("image") as File)?.size ? (formData.get("image") as File) : undefined,
     });
   };
 
   return (
     <form className="flex flex-col gap-5" onSubmit={handleSubmit} encType="multipart/form-data">
-      <Input label="Pessoa" defaultValue={personName} readOnly disabled />
+      <Input defaultValue={personName} readOnly disabled />
 
-      <Input label="Nome *" id="title" name="title" defaultValue={shirt?.title} required />
+      <Input id="title" name="title" defaultValue={shirt?.title} required />
 
       <Input
-        label="Preco (R$) *"
         value={price.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
         onChange={handleChangePrice}
         name="price"
@@ -143,7 +144,7 @@ export function AddShirtForm({ personId, personName, shirt }: AddShirtFormProps)
         </div>
       </div>
 
-      <Input label="Link" id="link" name="link" defaultValue={shirt?.link} />
+      <Input id="link" name="link" defaultValue={shirt?.link} />
 
       <div onPaste={handlePaste}>
         <span className="block mb-1 text-sm font-medium">Imagem</span>

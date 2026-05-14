@@ -27,7 +27,6 @@ export function AddPersonForm({ personId, defaultName }: AddPersonFormProps) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <Input
-        label="Nome"
         id="name"
         name="name"
         placeholder="Digite o nome da pessoa"

@@ -1,9 +1,8 @@
-import type { User, UserLogin } from "@/entities/user/model/types";
+import type { AuthSession, User } from "@/entities/user/model/types";
 import { createContext } from "react";
 
 export interface AuthContextData {
-  login(input: UserLogin): Promise<void>;
-  register(input: UserLogin): Promise<void>;
+  setUserData(authSession: AuthSession): void;
   logout(): Promise<void>;
   user: User | null;
   isAuthLoading: boolean;

@@ -162,7 +162,6 @@ httpClient.interceptors.response.use(
     };
 
     const status = error.response?.status;
-    const body = error.response?.data as ApiResponse | undefined;
 
     if (status === 401 && !originalRequest._retry && !refreshFailed) {
       if (isRefreshing) {
@@ -203,7 +202,9 @@ httpClient.interceptors.response.use(
       }
     }
 
+    const body = error.response?.data as ApiResponse | undefined;
     const message = body?.error ?? error.message;
+
     if (status !== 401 && message) {
       toast.error(message);
     }

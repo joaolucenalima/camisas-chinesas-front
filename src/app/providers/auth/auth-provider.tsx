@@ -1,7 +1,6 @@
 import { userQueryKeys } from "@/entities/user/api/query-keys";
 import { useCurrentUserQuery } from "@/entities/user/model/use-current-user-query";
-import { type UserLogin } from "@/entities/user/model/types";
-import { useLoginMutation, useRegisterMutation } from "@/features/auth/model";
+import { type AuthSession } from "@/entities/user/model/types";
 import {
   clearAuthToken,
   httpClient,
@@ -18,27 +17,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const { data: currentUser, isLoading, isFetching } = useCurrentUserQuery();
 
-  const loginMutation = useLoginMutation();
-  const registerMutation = useRegisterMutation();
-
-  const login = useCallback(
-    async (input: UserLogin) => {
-      const authSession = await loginMutation.mutateAsync(input);
-      const { user, accessToken } = authSession;
-      setAuthToken(accessToken);
-      queryClient.setQueryData(userQueryKeys.me, user);
+  const setUserData = useCallback(
+    (authSession: AuthSession) => {
+      setAuthToken(authSession.accessToken);
+      queryClient.invalidateQueries();
+      queryClient.setQueryData(userQueryKeys.me, authSession.user);
     },
-    [loginMutation, queryClient],
-  );
-
-  const register = useCallback(
-    async (input: UserLogin) => {
-      const authSession = await registerMutation.mutateAsync(input);
-      const { user, accessToken } = authSession;
-      setAuthToken(accessToken);
-      queryClient.setQueryData(userQueryKeys.me, user);
-    },
-    [queryClient, registerMutation],
+    [queryClient],
   );
 
   const clearSession = useCallback(() => {
@@ -61,20 +46,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }, [clearSession, queryClient]);
 
-  const isAuthLoading =
-    isLoading || isFetching || loginMutation.isPending || registerMutation.isPending;
-
-  const user = currentUser ?? null;
+  const isAuthLoading = isLoading || isFetching;
 
   const value = useMemo(
     () => ({
-      login,
-      register,
+      setUserData,
       logout,
-      user,
+      user: currentUser ?? null,
       isAuthLoading,
     }),
-    [isAuthLoading, login, logout, register, user],
+    [setUserData, isAuthLoading, logout, currentUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

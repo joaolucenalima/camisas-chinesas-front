@@ -16,6 +16,8 @@ import { Field, FieldError, FieldLabel } from "@/shared/ui/field";
 import { InputGroup, InputGroupButton, InputGroupInput } from "@/shared/ui/input-group";
 import { Eye, EyeClosed } from "lucide-react";
 import { useAuth } from "@/app/providers/auth/use-auth";
+import { useLoginMutation, useRegisterMutation } from "../model";
+import type { AuthSession } from "@/entities/user/model/types";
 
 const loginFormSchema = z.object({
   name: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
@@ -25,7 +27,7 @@ const loginFormSchema = z.object({
 type LoginFormType = z.infer<typeof loginFormSchema>;
 
 export function LoginForm() {
-  const { isAuthLoading, login, register: registerMutation } = useAuth();
+  const { setUserData } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isRegisterMode, setIsRegisterMode] = useState(false);
@@ -40,17 +42,28 @@ export function LoginForm() {
     resolver: zodResolver(loginFormSchema),
   });
 
-  function onLoginSubmit(data: LoginFormType) {
+  const loginMutation = useLoginMutation();
+  const registerMutation = useRegisterMutation();
+
+  const isPending = loginMutation.isPending || registerMutation.isPending;
+
+  async function onLoginSubmit(data: LoginFormType) {
+    let authSession: AuthSession;
+
     if (isRegisterMode) {
-      registerMutation(data);
+      authSession = await registerMutation.mutateAsync(data);
     } else {
-      login(data);
+      authSession = await loginMutation.mutateAsync(data);
     }
 
-    setIsRegisterMode(false);
-    setShowPassword(false);
-    reset();
-    setIsOpen(false);
+    if (authSession) {
+      setUserData(authSession);
+
+      setIsRegisterMode(false);
+      setShowPassword(false);
+      reset();
+      setIsOpen(false);
+    }
   }
 
   return (
@@ -123,13 +136,13 @@ export function LoginForm() {
                   setIsRegisterMode((prev) => !prev);
                   reset();
                 }}
-                disabled={isAuthLoading}
+                disabled={isPending}
               >
                 {isRegisterMode ? "Entrar" : "Cadastrar"}
               </button>
             </p>
 
-            <Button type="submit" disabled={isAuthLoading}>
+            <Button type="submit" disabled={isPending}>
               {isRegisterMode ? "Cadastrar" : "Entrar"}
             </Button>
           </div>
